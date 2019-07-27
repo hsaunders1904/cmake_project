@@ -1,6 +1,6 @@
-#include <iostream>
+#include "package_name.h"
 
 int main() {
-    std::cout << "Hello World!\n";
+    HelloWorld::print();
     return 0;
 }
