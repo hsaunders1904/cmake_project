@@ -7,5 +7,5 @@ void HelloWorld::print() {
 }
 
 std::string HelloWorld::get() {
-    return "HelloWorld!\n";
+    return "Hello World!\n";
 }
