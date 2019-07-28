@@ -16,4 +16,5 @@ set(
 )
 
 add_library(${PACKAGE_NAME} SHARED STATIC ${SRC_FILES} ${HDR_FILES})
+set_target_properties(${PACKAGE_NAME} PROPERTIES FOLDER Libraries)
 target_include_directories(${PACKAGE_NAME} PRIVATE include)
