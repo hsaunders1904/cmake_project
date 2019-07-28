@@ -22,7 +22,7 @@ if(WIN32)
 endif()
 if(UNIX)
   string(JOIN " " UNIX_FLAGS
-    "--std=c++17"
+    "--std=c++${CMAKE_CXX_STANDARD}"
     "-Wall"
     "-pedantic"
     "-Wextra"
@@ -38,7 +38,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
 
 #######################################################################
+# Set our configuration options
+#######################################################################
+option(BUILD_TESTS "Enable to build tests.")
+
+#######################################################################
 # Add subdirectories for our code
 #######################################################################
 add_subdirectory(src)
-add_subdirectory(test)
+if(BUILD_TESTS)
+  add_subdirectory(test)
+endif()
