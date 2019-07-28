@@ -1,5 +1,5 @@
 #######################################################################
-# Set CMake required version and project name
+# Set CMake required version, project name and CMake settings
 #######################################################################
 set(CMAKE_MINIMUM_REQUIRED_VERSION 3.5)
 cmake_minimum_required(VERSION ${CMAKE_MINIMUM_REQUIRED_VERSION})
@@ -7,6 +7,8 @@ cmake_minimum_required(VERSION ${CMAKE_MINIMUM_REQUIRED_VERSION})
 set(PROJECT_NAME cmake_project)
 project(${PROJECT_NAME} VERSION 0.0.1)
 message(STATUS "Configuring ${PROJECT_NAME}")
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 #######################################################################
 # Set our compiler options
