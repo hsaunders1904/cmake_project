@@ -13,10 +13,21 @@ message(STATUS "Configuring ${PROJECT_NAME}")
 #######################################################################
 set(CMAKE_CXX_STANDARD 17)
 if(WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W2")
+  string(JOIN " " WIN32_FLAGS
+    "/W2"                                   # Set warning level to 2
+    "/experimental:external"
+    "/external:I ${CMAKE_SOURCE_DIR}/lib/"  # Ignore warnings from lib
+  )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WIN32_FLAGS}")
 endif()
 if(UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall")
+  string(JOIN " " UNIX_FLAGS
+    "--std=c++17"
+    "-Wall"
+    "-pedantic"
+    "-Wextra"
+  )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${UNIX_FLAGS}")
 endif()
 
 #######################################################################
