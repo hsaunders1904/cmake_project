@@ -1,0 +1,42 @@
+cmake_minimum_required(VERSION ${CMAKE_MINIMUM_REQUIRED_VERSION})
+project(boost NONE)
+
+include(ExternalProject)
+
+set(BOOST_SRC ${CMAKE_SOURCE_DIR}/external/boost)  # _${BOOST_VERSION_UNDERSCORE})
+set(BOOST_BUILD ${CMAKE_BINARY_DIR}/external/boost)  # _${BOOST_VERSION_UNDERSCORE})
+string(JOIN " & " CONF_CMD
+  ${BOOST_BUILD}/tools/build/bootstrap.bat
+  ${BOOST_BUILD}/libs/program_options/bootstrap.bat
+)
+message(STATUS "\n${BOOST_SRC}\n${BOOST_BUILD}\n")
+if(WIN32)
+  set(BOOTSTRAP_CMD "./bootstrap.bat")
+elseif(UNIX)
+  set(BOOTSTRAP_CMD "./bootstrap.sh")
+endif()
+
+string(JOIN " & " CONF_CMD
+  ${BOOST_BUILD}/tools/build/bootstrap.bat
+  ${BOOST_BUILD}/libs/program_options/bootstrap.bat
+)
+message(STATUS "CONF COMMAND: ${BOOST_CONF_CMD}")
+# string(JOIN " & " BOOST_BUILD_COMMAND
+#   )
+
+ExternalProject_Add(boost
+  GIT_REPOSITORY "https://github.com/boostorg/boost.git"
+  GIT_TAG boost-${BOOST_VERSION}
+  GIT_SUBMODULES ${BOOST_SUBMODULES_STR}
+  GIT_PROGRESS ON
+  SOURCE_DIR ${BOOST_SRC}
+  BINARY_DIR ${BOOST_BUILD}
+  CONFIGURE_COMMAND "cd ${CMAKE_SOURCE_DIR}/external/boost && bootstrap.bat --with-libraries=build,program_options"
+  # CONFIGURE_COMMAND ${BOOST_CONF_CMD}
+  # BUILD_COMMAND "<SOURCE_DIR>/b2 link=static install"
+  BUILD_COMMAND ${BOOST_BUILD_CMD}
+  INSTALL_COMMAND ""
+  TEST_COMMAND ""
+  UPDATE_COMMAND ""
+  # BUILD_IN_SOURCE ON
+)
