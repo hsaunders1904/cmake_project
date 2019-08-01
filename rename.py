@@ -42,7 +42,7 @@ def replace_substrings_in_string(string, old_substrings, new_substrings):
 os.chdir(BASE_DIR)
 
 files_to_search = ['CMakeLists.txt']
-for directory in ['src', 'test']:
+for directory in ['src', 'tests']:
     for root, _, file_names in os.walk(directory):
         for file_name in file_names:
             path = os.path.join(root, file_name)
