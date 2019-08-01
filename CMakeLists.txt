@@ -42,7 +42,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
 #######################################################################
 # Set our configuration options
 #######################################################################
-option(BUILD_TESTS "Enable to build tests.")
+option(BUILD_TESTS "Enable to build tests." ON)
 
 #######################################################################
 # Add subdirectories for our code
