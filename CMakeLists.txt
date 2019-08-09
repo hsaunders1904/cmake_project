@@ -44,6 +44,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
 # Set our configuration options
 #######################################################################
 option(ENABLE_TESTS "Enable to build tests." ON)
+option(ENABLE_OPEN_MP "Enable to use OpenMP." OFF)
+
+#######################################################################
+# Set the CMake module path and run our include scripts
+#######################################################################
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+if(ENABLE_OPEN_MP)
+  include(findOpenMP)
+endif()
 
 #######################################################################
 # Add subdirectories for our code
