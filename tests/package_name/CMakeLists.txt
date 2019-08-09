@@ -12,11 +12,14 @@ set(
 #######################################################################
 foreach(_test_case ${TEST_CASES})
   add_executable(${_test_case} ${_test_case}.cpp ${CATCH_MAIN})
-  set_target_properties(${_test_case} PROPERTIES FOLDER Tests/${PACKAGE_NAME})
   target_link_libraries(${_test_case} ${PACKAGE_NAME})
   target_include_directories(${_test_case} PRIVATE
     ${CMAKE_SOURCE_DIR}/external/Catch2
     ${CMAKE_SOURCE_DIR}/src/${PACKAGE_NAME}/include
   )
-  add_test(${_test_case} ${EXECUTABLE_OUTPUT_PATH}/${_test_case})
+  set_target_properties(${_test_case} PROPERTIES
+    FOLDER Tests/${PACKAGE_NAME}
+    RUNTIME_OUTPUT_DIRECTORY ${TESTS_BIN_DIR}
+  )
+  add_test(${_test_case} ${TESTS_BIN_DIR}/${_test_case})
 endforeach()
