@@ -16,9 +16,10 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 17)
 if(WIN32)
   string(JOIN " " WIN32_FLAGS
-    "/W2"                                   # Set warning level to 2
-    "/experimental:external"
-    "/external:I ${CMAKE_SOURCE_DIR}/lib/"  # Ignore warnings from lib
+    "/W4"                                        # Set warning level to 4
+    "/std:c++${CMAKE_CXX_STANDARD}"              # Set the C++ standard
+    "/experimental:external"                     # Enable 'external' flag
+    "/external:I ${CMAKE_SOURCE_DIR}/external/"  # Ignore warnings from external libraries
   )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WIN32_FLAGS}")
 endif()
