@@ -1,14 +1,14 @@
-set(PACKAGE_NAME package_name)
+set(PACKAGE_NAME submodule_name)
 #######################################################################
 # List of our tests, each should correspond to a .cpp file
 #######################################################################
 set(
   TEST_CASES
-  package_nameTest
+  submodule_nameTest
 )
 
 #######################################################################
-# Build our tests and link to the tested package and Catch
+# Build our tests and link to the tested submodule and Catch
 #######################################################################
 foreach(_test_case ${TEST_CASES})
   add_executable(${_test_case} ${_test_case}.cpp ${CATCH_MAIN})
@@ -18,7 +18,7 @@ foreach(_test_case ${TEST_CASES})
     ${CMAKE_SOURCE_DIR}/src/${PACKAGE_NAME}/include
   )
   set_target_properties(${_test_case} PROPERTIES
-    FOLDER Tests/${PACKAGE_NAME}
+    FOLDER Tests/${SUBMODULE_NAME}
     RUNTIME_OUTPUT_DIRECTORY ${TESTS_BIN_DIR}
   )
   add_test(${_test_case} ${TESTS_BIN_DIR}/${_test_case})

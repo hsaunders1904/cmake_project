@@ -3,15 +3,18 @@ import os
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 PROJECT_NAME = "cmake_project"
-PACKAGE_NAME = "package_name"
+SUBMODULE_NAME = "submodule_name"
 
 NEW_PROJECT_NAME = input("Enter a new name for your project: ")
-NEW_PACKAGE_NAME = input("Enter a new name for the package in your project: ")
-print("Do you want to create a project '{}' containing pacakge '{}'?"
-      "".format(NEW_PROJECT_NAME, NEW_PACKAGE_NAME))
+NEW_SUBMODULE_NAME = input("Enter a new name for the submodule in your project: ")
+print(
+    "Do you want to create a project '{}' containing submodule '{}'?"
+    "".format(NEW_PROJECT_NAME, NEW_SUBMODULE_NAME)
+)
 permission = input("[y/n]: ")
-if permission.lower() != 'y':
+if permission.lower() != "y":
     import sys
+
     sys.exit()
 
 
@@ -23,12 +26,12 @@ def move_file(old_path, new_path):
 
 
 def replace_file_contents(file_path, new_contents):
-    with open(file_path, 'w') as f:
+    with open(file_path, "w") as f:
         f.write(new_contents)
 
 
 def read_file_contents(file_path):
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         return f.read()
 
 
@@ -41,8 +44,8 @@ def replace_substrings_in_string(string, old_substrings, new_substrings):
 # Change working directory to base of project - it just makes things easier
 os.chdir(BASE_DIR)
 
-files_to_search = ['CMakeLists.txt']
-for directory in ['src', 'tests']:
+files_to_search = ["CMakeLists.txt"]
+for directory in ["src", "tests"]:
     for root, _, file_names in os.walk(directory):
         for file_name in file_names:
             path = os.path.join(root, file_name)
@@ -51,14 +54,16 @@ for directory in ['src', 'tests']:
 for file_path in files_to_search:
     # Replace files' contents
     contents = read_file_contents(file_path)
-    new_contents = replace_substrings_in_string(contents,
-        [PROJECT_NAME, PACKAGE_NAME], [NEW_PROJECT_NAME, NEW_PACKAGE_NAME])
+    new_contents = replace_substrings_in_string(
+        contents, [PROJECT_NAME, SUBMODULE_NAME],
+        [NEW_PROJECT_NAME, NEW_SUBMODULE_NAME]
+    )
     if new_contents != contents:
         replace_file_contents(file_path, new_contents)
 
     # Rename files
     new_path = file_path.replace(PROJECT_NAME, NEW_PROJECT_NAME)
-    new_path = new_path.replace(PACKAGE_NAME, NEW_PACKAGE_NAME)
+    new_path = new_path.replace(SUBMODULE_NAME, NEW_SUBMODULE_NAME)
     if new_path != file_path:
         print(file_path + " -> " + new_path)
         move_file(old_path=file_path, new_path=new_path)
