@@ -53,12 +53,14 @@ option(ENABLE_TESTS "Enable to build tests." ON)
 option(ENABLE_OPEN_MP "Enable to use OpenMP." OFF)
 
 #######################################################################
-# Set the CMake module path and run our include scripts
+# Set the CMake module path, run our include scripts and conan
 #######################################################################
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/tools/cmake)
 if(ENABLE_OPEN_MP)
   include(findOpenMP)
 endif()
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 
 #######################################################################
 # Add subdirectories for our code
