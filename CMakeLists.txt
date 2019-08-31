@@ -16,6 +16,13 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
 
 #######################################################################
+# Run Conan install and import the generated target links
+#######################################################################
+execute_process(COMMAND conan install ${CMAKE_SOURCE_DIR} -if ${CMAKE_BINARY_DIR})
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
+
+#######################################################################
 # Set our compiler options
 #######################################################################
 set(CMAKE_CXX_STANDARD 17)
@@ -59,8 +66,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/tools/cmake)
 if(ENABLE_OPEN_MP)
   include(findOpenMP)
 endif()
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 
 #######################################################################
 # Add subdirectories for our code
