@@ -11,6 +11,11 @@ message(STATUS "Configuring ${PROJECT_NAME}")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 #######################################################################
+# Set some useful path variables
+#######################################################################
+set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
+
+#######################################################################
 # Set our compiler options
 #######################################################################
 set(CMAKE_CXX_STANDARD 17)
@@ -57,6 +62,7 @@ endif()
 # Add subdirectories for our code
 #######################################################################
 add_subdirectory(src)
+add_subdirectory(lib)
 if(ENABLE_TESTS)
   enable_testing()
   add_subdirectory(tests)

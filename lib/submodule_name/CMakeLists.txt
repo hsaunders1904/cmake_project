@@ -16,5 +16,5 @@ set(
 )
 
 add_library(${SUBMODULE_NAME} SHARED STATIC ${SRC_FILES} ${HDR_FILES})
-set_target_properties(${SUBMODULE_NAME} PROPERTIES FOLDER Libraries)
+set_target_properties(${SUBMODULE_NAME} PROPERTIES FOLDER Submodules)
 target_include_directories(${SUBMODULE_NAME} PRIVATE include)

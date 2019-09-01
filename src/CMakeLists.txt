@@ -13,7 +13,7 @@ set(
 )
 
 foreach(_submodule_name ${SUBMODULES})
-  add_subdirectory(${_submodule_name})
-  target_include_directories(${PROJECT_NAME} PRIVATE ${_submodule_name}/include)
+  target_include_directories(${PROJECT_NAME} PRIVATE
+    ${LIB_DIR}/${_submodule_name}/include)
   target_link_libraries(${PROJECT_NAME} ${_submodule_name})
 endforeach()

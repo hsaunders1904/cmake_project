@@ -1,4 +1,4 @@
-set(PACKAGE_NAME submodule_name)
+set(SUBMODULE_NAME submodule_name)
 #######################################################################
 # List of our tests, each should correspond to a .cpp file
 #######################################################################
@@ -12,10 +12,10 @@ set(
 #######################################################################
 foreach(_test_case ${TEST_CASES})
   add_executable(${_test_case} ${_test_case}.cpp ${CATCH_MAIN})
-  target_link_libraries(${_test_case} ${PACKAGE_NAME})
+  target_link_libraries(${_test_case} ${SUBMODULE_NAME})
   target_include_directories(${_test_case} PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/Catch2
-    ${CMAKE_SOURCE_DIR}/src/${PACKAGE_NAME}/include
+    ${CMAKE_SOURCE_DIR}/external/Catch2/include
+    ${LIB_DIR}/${SUBMODULE_NAME}/include
   )
   set_target_properties(${_test_case} PROPERTIES
     FOLDER Tests/${SUBMODULE_NAME}
