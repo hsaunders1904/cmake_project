@@ -18,8 +18,10 @@ foreach(_test_case ${TEST_CASES})
     ${LIB_DIR}/${SUBMODULE_NAME}/include
   )
   set_target_properties(${_test_case} PROPERTIES
-    FOLDER Tests/${SUBMODULE_NAME}
+    FOLDER Tests/${PACKAGE_NAME}
     RUNTIME_OUTPUT_DIRECTORY ${TESTS_BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${TESTS_BIN_DIR}/Debug
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${TESTS_BIN_DIR}/Release
   )
   add_test(${_test_case} ${TESTS_BIN_DIR}/${_test_case})
 endforeach()

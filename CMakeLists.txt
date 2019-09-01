@@ -42,7 +42,9 @@ endif()
 #######################################################################
 set(PROJECT_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PROJECT_BIN_DIR}/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BIN_DIR}/Release)
 
 #######################################################################
 # Set our configuration options
