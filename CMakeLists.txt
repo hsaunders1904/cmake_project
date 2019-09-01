@@ -13,6 +13,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 #######################################################################
 # Set some useful path variables
 #######################################################################
+set(INC_DIR ${CMAKE_SOURCE_DIR}/include)
 set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
 
 #######################################################################
