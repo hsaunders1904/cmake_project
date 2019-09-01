@@ -2,6 +2,6 @@
 
 #include <catch2/catch.hpp>
 
-TEST_CASE("Test get hello world string", "[submodule_name]") {
+TEST_CASE("HelloWorld::get returns Hello World", "[submodule_name]") {
   REQUIRE("Hello World!\n" == HelloWorld::get());
 }
