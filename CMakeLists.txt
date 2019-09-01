@@ -38,7 +38,7 @@ if(UNIX)
 endif()
 
 #######################################################################
-# Set output directories for libraries and exectuables
+# Set output directories for libraries and executables
 #######################################################################
 set(PROJECT_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
