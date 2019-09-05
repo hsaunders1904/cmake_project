@@ -31,17 +31,31 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 17)
 
 #######################################################################
+# Set our configuration options
+#######################################################################
+option(ENABLE_TESTS "Enable to build tests." ON)
+
+#######################################################################
 # Set output directories for libraries and executables
 #######################################################################
 set(PROJECT_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
-if(UNIX)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
-elseif(WIN32)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
+if(WIN32)
   foreach(_config Debug Release)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${_config} "${PROJECT_BIN_DIR}/${_config}")
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${_config} "${PROJECT_BIN_DIR}/${_config}")
   endforeach()
+endif()
+
+#######################################################################
+# Enable testing if required and set some useful variables
+#######################################################################
+if(ENABLE_TESTS)
+  find_package(Catch2 REQUIRED)
+  enable_testing()
+  set(CATCH_MAIN "${CMAKE_SOURCE_DIR}/tests/catchMain.cpp")
+  set(TESTS_BIN_DIR "${CMAKE_BINARY_DIR}/tests/bin")
 endif()
 
 #######################################################################
