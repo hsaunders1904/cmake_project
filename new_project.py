@@ -20,7 +20,7 @@ from shutil import copyfile
 
 DEFAULT_PROJECT_NAME = 'cmake_project'
 DEFAULT_MODULE_NAME = 'project_module'
-EXCLUDE_FILES = ['.git-keep', 'README.md', 'LICENSE', 'new_project.py']
+EXCLUDE_FILES = ['README.md', 'LICENSE', 'new_project.py']
 
 
 def replace_project_names(string):
