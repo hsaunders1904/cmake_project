@@ -11,6 +11,16 @@ If you would rather not use Catch, or would like to use other packages,
 other branches of this repository offer alternatives. The idea being that
 you can mix-and-match and merge whichever branches you'd like to get you started on your project.
 
+## Conan
+
+This branch uses the package manager [conan](https://conan.io/) to deal with
+dependencies. A `conanfile.txt` is added to the root of the repo, `conan
+install` is then run on this file at CMake configure time. This will
+download the dependencies listed in `conanfile.txt` and output a CMake file
+that exports variables that can be used to link to the libraries.
+
+The only library linked to in this branch is [Catch2](https://github.com/catchorg/Catch2).
+
 ## Usage
 
 - Clone this repository somewhere on your computer.
