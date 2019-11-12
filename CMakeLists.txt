@@ -15,6 +15,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 #######################################################################
 set(CMAKE_CXX_STANDARD 17)
 
+# Run Conan install and import the generated target links
+#######################################################################
+execute_process(COMMAND conan install ${CMAKE_SOURCE_DIR}
+                -if ${CMAKE_BINARY_DIR}
+                --build missing)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
+
 #######################################################################
 # Set our configuration options
 #######################################################################

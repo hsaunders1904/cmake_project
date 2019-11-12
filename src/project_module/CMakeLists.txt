@@ -23,7 +23,7 @@ if(ENABLE_TESTS)
     set(_test_src "src/${_test_name}.cpp")
     set(_test_case "${MODULE_NAME}.${_test_name}")
     add_executable(${_test_case} ${_test_src} ${CATCH_MAIN})
-    target_link_libraries(${_test_case} ${MODULE_NAME} Catch2::Catch2)
+    target_link_libraries(${_test_case} ${MODULE_NAME}  CONAN_PKG::Catch2)
     target_include_directories(${_test_case} PRIVATE "include")
     set_target_properties(${_test_case} PROPERTIES
       FOLDER "Tests/${MODULE_NAME}"
