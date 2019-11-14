@@ -1,5 +1,5 @@
-#ifndef CMAKE_PROJECT_H
-#define CMAKE_PROJECT_H
+#ifndef PROJECT_MODULE_H
+#define PROJECT_MODULE_H
 
 #include <iostream>
 #include <string>
@@ -10,4 +10,4 @@ public:
   const void static print();
 };
 
-#endif // CMAKE_PROJECT_H
+#endif // PROJECT_MODULE_H
