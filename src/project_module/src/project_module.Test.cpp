@@ -4,5 +4,5 @@
 
 TEST_CASE("HelloWorld::get returns 'Hello, World!'",
           "[project_module]") {
-  REQUIRE("Hello, world!" == HelloWorld::get());
+  REQUIRE("Hello" == HelloWorld::get());
 }
