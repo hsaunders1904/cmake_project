@@ -1,0 +1,33 @@
+#!groovy
+
+pipeline {
+   agent any
+
+   stages {
+
+      stage('Build') {
+         steps {
+            sh '''
+                cd build/
+                cmake .. -G "Unix Makefiles"
+                cmake --build .
+            '''
+         }
+      }
+
+      stage('Test') {
+            steps {
+                sh '''
+                    cd build/
+                    ctest
+                '''
+            }
+      }
+
+      stage('Deploy') {
+            steps {
+                sh 'echo -e "Deploy step..."'
+            }
+      }
+   }
+}
