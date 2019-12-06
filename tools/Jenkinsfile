@@ -1,33 +1,16 @@
 #!groovy
 
+import groovy.json.JsonSlurper
+
 pipeline {
-   agent any
+    agent any
 
    stages {
 
-      stage('Build') {
-         steps {
-            sh '''
-                cd build/
-                cmake .. -G "Unix Makefiles"
-                cmake --build .
-            '''
-         }
-      }
-
-      stage('Test') {
+        stage('Parse') {
             steps {
-                sh '''
-                    cd build/
-                    ctest
-                '''
+                println new JsonSlurper().parseText(env.payload)
             }
-      }
-
-      stage('Deploy') {
-            steps {
-                sh 'echo "Deploy step..."'
-            }
-      }
+        }
    }
 }
