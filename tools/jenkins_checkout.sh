@@ -22,7 +22,7 @@ fi
 
 remote="$1"
 ref="$2"
-new_branch_name="temp_branch"
+new_branch_name="tmp_branch"
 
 echo "Fetching '$ref' from '$remote'..."
 

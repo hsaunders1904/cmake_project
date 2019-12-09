@@ -1,6 +1,28 @@
 #!groovy
 
 import groovy.json.JsonSlurper
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.URL
+import java.net.URLConnection
+
+def sendPostRequest(urlString, paramString) {
+    def url = new URL(urlString)
+    def conn = url.openConnection()
+    conn.setDoOutput(true)
+    def writer = new OutputStreamWriter(conn.getOutputStream())
+
+    writer.write(paramString)
+    writer.flush()
+    String line
+    def reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))
+    while ((line = reader.readLine()) != null) {
+      println line
+    }
+    writer.close()
+    reader.close()
+}
 
 def getBranchName() {
     def json = new JsonSlurper().parseText(env.payload)
@@ -10,6 +32,23 @@ def getBranchName() {
 def getGitRemote() {
     def json = new JsonSlurper().parseText(env.payload)
     return json.pull_request.base.repo.git_url
+}
+
+def getGitHubStatusUrl() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.statuses_url
+}
+
+def notifyGitHub(int status) {
+    String context = "Jenkins Build and Test"
+    String status_string
+    if (status == 0) {
+        status_string = "state=error&description=Error+occurred+in+build&context=$context"
+    }
+    if(status == 1) {
+        status_string = "state=success&descirption=Build+succeeded&context=$context"
+    }
+    sendPostRequest(getGitHubStatusUrl(), status_string)
 }
 
 pipeline {
@@ -47,5 +86,17 @@ pipeline {
                 '''
             }
         }
+   }
+
+   post {
+        always {
+           deleteDir()
+       }
+       success {
+           notifyGitHub(1)
+       }
+       failure {
+           notifyGitHub(0)
+       }
    }
 }
