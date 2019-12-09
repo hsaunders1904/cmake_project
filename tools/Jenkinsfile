@@ -18,7 +18,6 @@ pipeline {
     stages {
 
         stage('Checkout') {
-
             steps {
                 echo 'Checkout stage...'
                 sh """
@@ -28,9 +27,24 @@ pipeline {
             }
         }
 
-        stage("Build") {
+        stage('Build') {
             steps {
                 echo 'Build stage...'
+                sh '''
+                    cd build/
+                    cmake ..
+                    cmake --build .
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Test stage...'
+                sh '''
+                    cd build
+                    ctest
+                '''
             }
         }
    }
