@@ -2,14 +2,35 @@
 
 import groovy.json.JsonSlurper
 
+def getBranchName() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return "pull/" + json.pull_request.number + "/merge"
+}
+
+def getGitRemote() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.base.repo.git_url
+}
+
 pipeline {
     agent any
 
-   stages {
+    stages {
 
-        stage('Parse') {
+        stage('Checkout') {
+
             steps {
-                println new JsonSlurper().parseText(env.payload)
+                echo 'Checkout stage...'
+                sh """
+                    chmod +x tools/jenkins_checkout.sh
+                    ./tools/jenkins_checkout.sh ${getGitRemote()} ${getBranchName()}
+                """
+            }
+        }
+
+        stage("Build") {
+            steps {
+                echo 'Build stage...'
             }
         }
    }
