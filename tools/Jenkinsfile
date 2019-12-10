@@ -44,9 +44,11 @@ pipeline {
                 deleteDir()
                 echo 'Checkout stage...'
                 sh """
-                    git clone ${getGitRemote()} &&
-                    git fetch ${getGitRemote()} ${getBranchName()}:pr-${getGitHubPrNumber()} &&
-                    git checkout pr-${getGitHubPrNumber()}
+                    git init . &&
+                    git remote add origin ${getGitRemote()} &&
+                    git fetch origin ${getBranchName()}:pr-${getGitHubPrNumber()} &&
+                    git checkout pr-${getGitHubPrNumber()} &&
+                    echo "Head is at \$(git log --oneline -n 1)"
                 """
             }
         }
