@@ -22,6 +22,11 @@ def getGitHubPrNumber() {
     return json.pull_request.number
 }
 
+def getHeadSha() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.head.sha
+}
+
 def genGitNotifyUrl(int status) {
     String context = "Jenkins Build and Test"
     String status_string
@@ -32,6 +37,22 @@ def genGitNotifyUrl(int status) {
         status_string = "state=success&descirption=Build+succeeded&context=$context"
     }
     return getGitHubStatusUrl() + "?" + status_string
+}
+
+def postGitHubCommitStatus(String message, String state) {
+    step([
+        $class: "GitHubCommitStatusSetter",
+        reposSource: [$class: "ManuallyEnteredRepositorySource", url: getGitRemote()],
+        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "Jenkins Linux"],
+        errorHandlers: [
+            [$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]
+        ],
+        statusResultSource: [
+            $class: "ConditionalStatusResultSource", results: [
+                [$class: "AnyBuildResult", message: message, state: state]
+            ]
+        ]
+    ]);
 }
 
 pipeline {
@@ -80,9 +101,7 @@ pipeline {
             deleteDir()
         }
         success {
-            sh '''
-                echo "Hello post success"
-            '''
+            postGitHubCommitStatus("Build succeeded", "SUCCESS")
         }
     }
 }
