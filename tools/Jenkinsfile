@@ -2,19 +2,47 @@
 
 import groovy.json.JsonSlurper
 
-github_json = new JsonSlurper().parseText(env.payload)
-String git_remote = json.pull_request.base.repo.clone_url
-String git_pr_number = json.pull_request.number
+def getBranchName() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return "pull/" + json.pull_request.number + "/merge"
+}
 
-// json object are not serializable, so Jenkins does not allow them to live
-// for long. Set github_json to null to avoid the error
-github_json = null
+def getGitRemote() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.base.repo.clone_url
+}
 
+def getGitHubStatusUrl() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.statuses_url
+}
+
+def getGitHubPrNumber() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.number
+}
+
+def getHeadSha() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.head.sha
+}
+
+def genGitNotifyUrl(int status) {
+    String context = "Jenkins Build and Test"
+    String status_string
+    if (status == 0) {
+        status_string = "state=error&description=Error+occurred+in+build&context=$context"
+    }
+    if(status == 1) {
+        status_string = "state=success&descirption=Build+succeeded&context=$context"
+    }
+    return getGitHubStatusUrl() + "?" + status_string
+}
 
 def postGitHubCommitStatus(String message, String state) {
     step([
         $class: "GitHubCommitStatusSetter",
-        reposSource: [$class: "ManuallyEnteredRepositorySource", url: git_remote],
+        reposSource: [$class: "ManuallyEnteredRepositorySource", url: getGitRemote()],
         contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "Jenkins Linux"],
         errorHandlers: [
             [$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]
@@ -41,9 +69,9 @@ pipeline {
                 echo 'Checkout stage...'
                 sh """
                     git init . &&
-                    git remote add origin ${git_remote} &&
-                    git fetch origin pull/${git_pr_number}/merge:pr-${git_pr_number} &&
-                    git checkout pr-${git_pr_number} &&
+                    git remote add origin ${getGitRemote()} &&
+                    git fetch origin ${getBranchName()}:pr-${getGitHubPrNumber()} &&
+                    git checkout pr-${getGitHubPrNumber()} &&
                     echo "Head is at \$(git log --oneline -n 1)"
                 """
             }
