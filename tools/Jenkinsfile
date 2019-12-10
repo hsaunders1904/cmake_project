@@ -34,20 +34,11 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                echo 'Checkout stage...'
-                sh """
-                    chmod +x tools/jenkins_checkout.sh
-                    ./tools/jenkins_checkout.sh ${getGitRemote()} ${getBranchName()}
-                """
-            }
-        }
-
         stage('Build') {
             steps {
                 echo 'Build stage...'
                 sh '''
+                    ls
                     cd build/
                     cmake ..
                     cmake --build .
@@ -64,17 +55,5 @@ pipeline {
                 '''
             }
         }
-   }
-
-   post {
-        always {
-           deleteDir()
-       }
-       success {
-           httpRequest "${genGitNotifyUrl(1)}"
-       }
-       failure {
-           httpRequest "${genGitNotifyUrl(0)}"
-       }
    }
 }
