@@ -55,6 +55,8 @@ def postGitHubCommitStatus(String message, String state) {
     ]);
 }
 
+postGitHubCommitStatus("Build in progress", "PENDING")
+
 pipeline {
     agent any
 
@@ -63,6 +65,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 deleteDir()
+
                 echo 'Checkout stage...'
                 sh """
                     git init . &&
@@ -102,6 +105,9 @@ pipeline {
         }
         success {
             postGitHubCommitStatus("Build succeeded", "SUCCESS")
+        }
+        failure {
+            postGitHubCommitStatus("Build failed", "FAILURE")
         }
     }
 }
