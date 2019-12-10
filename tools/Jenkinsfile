@@ -9,7 +9,7 @@ def getBranchName() {
 
 def getGitRemote() {
     def json = new JsonSlurper().parseText(env.payload)
-    return json.pull_request.base.repo.git_url
+    return json.pull_request.base.repo.clone_url
 }
 
 def getGitHubStatusUrl() {
