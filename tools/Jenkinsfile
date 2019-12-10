@@ -17,6 +17,11 @@ def getGitHubStatusUrl() {
     return json.pull_request.statuses_url
 }
 
+def getGitHubPrNumber() {
+    def json = new JsonSlurper().parseText(env.payload)
+    return json.pull_request.number
+}
+
 def genGitNotifyUrl(int status) {
     String context = "Jenkins Build and Test"
     String status_string
@@ -34,11 +39,21 @@ pipeline {
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                echo 'Checkout stage...'
+                sh """
+                    git clone ${getGitRemote()} &&
+                    git fetch ${getGitRemote()} ${getBranchName()}:pr-${getGitHubPrNumber()} &&
+                    git checkout pr-${getGitHubPrNumber()}
+                """
+            }
+        }
+
         stage('Build') {
             steps {
                 echo 'Build stage...'
                 sh '''
-                    ls
                     cd build/
                     cmake ..
                     cmake --build .
