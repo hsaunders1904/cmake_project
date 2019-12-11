@@ -33,6 +33,11 @@ postGitHubCommitStatus("Build in progress", "PENDING")
 pipeline {
     agent any
 
+    environment {
+        // Ensure we're in the same workspace that we checked the repo out into
+        WORKSPACE = env.BASE_WORKSPACE
+    }
+
     stages {
 
         stage('Checkout') {
@@ -41,11 +46,9 @@ pipeline {
 
                 echo 'Checkout stage...'
                 sh """
-                    git init . &&
-                    git remote add origin ${getGitRemote()} &&
                     git fetch origin pull/${getGitHubPrNumber()}/merge:pr-${getGitHubPrNumber()} &&
                     git checkout pr-${getGitHubPrNumber()} &&
-                    echo "Head is at \$(git log --oneline -n 1)"
+                    echo "HEAD is at \$(git log --oneline -n 1)"
                 """
             }
         }
@@ -54,8 +57,8 @@ pipeline {
             steps {
                 echo 'Build stage...'
                 sh '''
-                    cd build/
-                    cmake ..
+                    cd build/ &&
+                    cmake .. &&
                     cmake --build .
                 '''
             }
@@ -66,7 +69,7 @@ pipeline {
                 echo 'Test stage...'
                 sh '''
                     cd build
-                    ctest
+                    ctest -T Test
                 '''
             }
         }
