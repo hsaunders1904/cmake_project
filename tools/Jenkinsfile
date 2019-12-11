@@ -28,8 +28,6 @@ def postGitHubCommitStatus(String message, String state) {
     ]);
 }
 
-postGitHubCommitStatus("Build in progress", "PENDING")
-
 pipeline {
     agent any
 
@@ -42,8 +40,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                deleteDir()
-
+                postGitHubCommitStatus("Build in progress", "PENDING")
+                cleanWS()
                 echo 'Checkout stage...'
                 sh """
                     git fetch origin pull/${getGitHubPrNumber()}/merge:pr-${getGitHubPrNumber()} &&
