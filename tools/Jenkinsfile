@@ -44,6 +44,7 @@ pipeline {
                 deleteDir()
                 echo 'Checkout stage...'
                 sh """
+                    cd \"\$WORKSPACE\"
                     git fetch origin pull/${getGitHubPrNumber()}/merge:pr-${getGitHubPrNumber()} &&
                     git checkout pr-${getGitHubPrNumber()} &&
                     echo "HEAD is at \$(git log --oneline -n 1)"
@@ -55,6 +56,7 @@ pipeline {
             steps {
                 echo 'Build stage...'
                 sh '''
+                    cd \"\$WORKSPACE\"
                     cd build/ &&
                     cmake .. &&
                     cmake --build .
@@ -66,6 +68,7 @@ pipeline {
             steps {
                 echo 'Test stage...'
                 sh '''
+                    cd \"\$WORKSPACE\"
                     cd build
                     ctest -T Test
                 '''
