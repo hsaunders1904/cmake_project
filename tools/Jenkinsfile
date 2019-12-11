@@ -33,7 +33,7 @@ pipeline {
 
     environment {
         // Ensure we're in the same workspace that we checked the repo out into
-        WORKSPACE = env.BASE_WORKSPACE
+        WORKSPACE = "${env.BASE_WORKSPACE}"
     }
 
     stages {
