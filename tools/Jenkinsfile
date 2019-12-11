@@ -38,17 +38,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                postGitHubCommitStatus("Build in progress", "PENDING")
-                echo 'Checkout stage...'
-                sh """
-                    cd \"\$WORKSPACE\"
-                    echo "HEAD is at \$(git log --oneline -n 1)"
-                """
-            }
-        }
-
         stage('Build') {
             steps {
                 echo 'Build stage...'
