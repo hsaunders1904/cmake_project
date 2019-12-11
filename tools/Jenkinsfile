@@ -41,12 +41,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 postGitHubCommitStatus("Build in progress", "PENDING")
-                deleteDir()
                 echo 'Checkout stage...'
                 sh """
                     cd \"\$WORKSPACE\"
-                    git fetch origin pull/${getGitHubPrNumber()}/merge:pr-${getGitHubPrNumber()} &&
-                    git checkout pr-${getGitHubPrNumber()} &&
                     echo "HEAD is at \$(git log --oneline -n 1)"
                 """
             }
