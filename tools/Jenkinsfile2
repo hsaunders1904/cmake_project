@@ -26,4 +26,14 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            withCredentials([string(credentialsId: 'd68acf06-48f2-4a53-8032-1bf195d4ad36',
+                            variable: 'api_token')]) {
+                sh 'curl -H "Authorization: token ${api_token}" --request POST --data \'{"state": "success", "description": "A trial status post", "target_url": "www.google.com", "context": "${AGENT} Build"}\' \$PR_STATUSES_URL'
+            }
+
+        }
+    }
 }
