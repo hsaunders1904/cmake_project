@@ -15,16 +15,14 @@ def postGitHubCommitStatus(String state, String message) {
             }
 }
 
+node {
+    postGitHubCommitStatus("pending", "The build is running")
+}
+
 pipeline {
     agent any
 
     stages {
-
-        stage('Notify') {
-            steps {
-                postGitHubCommitStatus("pending", "The build is running")
-            }
-        }
 
         stage('Build') {
             steps {
