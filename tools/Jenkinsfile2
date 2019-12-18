@@ -1,5 +1,20 @@
 #!groovy
 
+withCredentials([string(credentialsId: 'GitHub_API_Token',
+                            variable: 'api_token')]) {
+    sh(
+        script: """curl -H "Authorization: token ${api_token}" \
+                        --request POST \
+                        --data '{"state": "pending", \
+                                "description": "The build is running", \
+                                "target_url": "$BUILD_URL", \
+                                "context": "$AGENT Build"}' \
+                        $PR_STATUSES_URL > /dev/null'
+                """,
+        returnStdout: false
+    )
+}
+
 pipeline {
     agent any
 
@@ -35,12 +50,31 @@ pipeline {
                     curl -H "Authorization: token ${api_token}" \
                         --request POST \
                         --data '{"state": "success", \
-                                 "description": "A trial status post", \
+                                 "description": "The build succeeded", \
                                  "target_url": "$BUILD_URL", \
                                  "context": "$AGENT Build"}' \
                         $PR_STATUSES_URL > /dev/null
                 """
             }
+        }
+
+        failure {
+            withCredentials([string(credentialsId: 'GitHub_API_Token',
+                            variable: 'api_token')]) {
+                sh """
+                    curl -H "Authorization: token ${api_token}" \
+                        --request POST \
+                        --data '{"state": "failure", \
+                                 "description": "The build failed", \
+                                 "target_url": "$BUILD_URL", \
+                                 "context": "$AGENT build"}' \
+                        $PR_STATUSES_URL > /dev/null
+                """
+            }
+        }
+
+        cleanup {
+            deleteDir()
         }
     }
 }
