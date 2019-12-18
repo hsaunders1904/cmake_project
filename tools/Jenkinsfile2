@@ -31,12 +31,16 @@ pipeline {
         success {
             withCredentials([string(credentialsId: 'GitHub_API_Token',
                             variable: 'api_token')]) {
-                // sh 'curl -H \"Authorization: token ${api_token}\" --request POST --data \'{\"state\": \"success\", \"description\": \"A trial status post\", \"target_url\": \"\$BUILD_URL\", \"context\": \"\$AGENT Build\"}\' \$PR_STATUSES_URL'
                 sh """
-                    curl -H "Authorization: token ${api_token}" --request POST --data '{"state": "success", "description": "A trial status post", "target_url": "$BUILD_URL", "context": "$AGENT Build"}' $PR_STATUSES_URL
+                    curl -H "Authorization: token ${api_token}" \
+                        --request POST \
+                        --data '{"state": "success", \
+                                 "description": "A trial status post", \
+                                 "target_url": "$BUILD_URL", \
+                                 "context": "$AGENT Build"}' \
+                        $PR_STATUSES_URL > /dev/null
                 """
             }
-
         }
     }
 }
