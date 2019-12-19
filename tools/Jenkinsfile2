@@ -15,10 +15,6 @@ def postGitHubCommitStatus(String state, String message) {
             }
 }
 
-node {
-    postGitHubCommitStatus("pending", "The build is running")
-}
-
 pipeline {
     agent any
 
@@ -26,6 +22,7 @@ pipeline {
 
         stage('Build') {
             steps {
+                postGitHubCommitStatus("pending", "The build is running")
                 echo 'Build stage...'
                 sh '''
                     cd build/ &&
