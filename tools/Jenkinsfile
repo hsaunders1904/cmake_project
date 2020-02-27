@@ -1,0 +1,66 @@
+#!groovy
+
+def postGitHubCommitStatus(String message, String state) {
+
+  step([
+    $class: "GitHubCommitStatusSetter",
+    reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.REPO_URL],
+    contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "PR-Ubuntu-18.04"],
+    errorHandlers: [
+      [$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]
+    ],
+    statusResultSource: [
+      $class: "ConditionalStatusResultSource", results: [
+          [$class: "AnyBuildResult", message: message, state: state]
+      ]
+    ]
+  ]);
+}
+
+pipeline {
+  // Specify the agent label to build the pipeline
+  // For our builds this is parameterized, so we only need one Jenkinsfile
+  agent any
+
+  stages {
+
+    stage('Build') {
+      steps {
+        script {
+          if(isUnix()) {
+            sh './tools/build.sh'
+          }
+        }
+      }
+   }
+
+    stage('Test') {
+      steps {
+        sh '''
+            cd build
+            ./bin/cmake_project
+            ctest --output-on-failure
+        '''
+        }
+    }
+
+    stage('Package') {
+      steps {
+          sh './tools/package.sh'
+      }
+    }
+  }
+
+  post {
+    always {
+      deleteDir()
+    }
+  //   success {
+  //     postGitHubCommitStatus("Build succeeded", "SUCCESS")
+  //   }
+  //   failure {
+  //     postGitHubCommitStatus("Build failed", "FAILURE")
+  //   }
+  }
+
+} // end pipeline
