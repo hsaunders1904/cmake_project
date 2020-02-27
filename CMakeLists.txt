@@ -47,3 +47,6 @@ endif()
 # Add subdirectories for our code
 #######################################################################
 add_subdirectory(src)
+
+install(DIRECTORY "${CMAKE_BINARY_DIR}/bin/" DESTINATION "." USE_SOURCE_PERMISSIONS)
+install(FILES "LICENSE" "README.md" DESTINATION ".")
