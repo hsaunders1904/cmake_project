@@ -50,22 +50,25 @@ pipeline {
     stage('Package') {
       steps {
         sh './tools/package.sh'
+        archiveArtifacts(
+          artifacts: 'build/*.tar.gz',
+          fingerprint: true
+        )
       }
     }
 
   }  // stages
 
   post {
-    // always {
-    //   deleteDir()
-    // }
-
-    success {
-      archiveArtifacts(
-        artifacts: 'build/*.tar.gz',
-        fingerprint: true
-      )
+    always {
+      deleteDir()
     }
+    // success {
+
+    // }
+    // failure {
+
+    // }
   }  // post
 
 }  // pipeline
