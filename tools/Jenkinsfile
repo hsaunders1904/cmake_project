@@ -36,11 +36,7 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh '''
-            cd build
-            ./bin/cmake_project
-            ctest --output-on-failure
-        '''
+        sh './tools/test.sh'
         }
     }
 
