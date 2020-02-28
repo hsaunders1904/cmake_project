@@ -1,25 +1,7 @@
 #!groovy
 
-def postGitHubCommitStatus(String message, String state) {
-
-  step([
-    $class: "GitHubCommitStatusSetter",
-    reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.REPO_URL],
-    contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "PR-Ubuntu-18.04"],
-    errorHandlers: [
-      [$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]
-    ],
-    statusResultSource: [
-      $class: "ConditionalStatusResultSource", results: [
-          [$class: "AnyBuildResult", message: message, state: state]
-      ]
-    ]
-  ]);
-}
-
 pipeline {
-  // Specify the agent label to build the pipeline
-  // For our builds this is parameterized, so we only need one Jenkinsfile
+
   agent any
 
   stages {
@@ -37,26 +19,53 @@ pipeline {
     stage('Test') {
       steps {
         sh './tools/test.sh'
-        }
+
+        // archive CTest results file
+        archiveArtifacts(
+          artifacts: 'build/Testing/**/*.xml',
+          fingerprint: true
+        )
+
+        // tell xUnit plugin to process the test results
+        xunit (
+          testTimeMargin: '3000',
+          thresholdMode: 1,
+          thresholds: [
+            skipped(failureThreshold: '0'),
+            failed(failureThreshold: '0')
+          ],
+          tools: [
+            CTest(
+              pattern: 'build/Testing/**/*.xml',
+              deleteOutputFiles: true,
+              failIfNotNew: false,
+              skipNoTestFiles: true,
+              stopProcessingIfError: true
+            )
+          ]
+        )
+      }
     }
 
     stage('Package') {
       steps {
-          sh './tools/package.sh'
+        sh './tools/package.sh'
       }
     }
-  }
+
+  }  // stages
 
   post {
     always {
       deleteDir()
     }
-  //   success {
-  //     postGitHubCommitStatus("Build succeeded", "SUCCESS")
-  //   }
-  //   failure {
-  //     postGitHubCommitStatus("Build failed", "FAILURE")
-  //   }
-  }
 
-} // end pipeline
+    success {
+      archiveArtifacts(
+        artifacts: 'build/*.tar.gz',
+        fingerprint: true
+      )
+    }
+  }  // post
+
+}  // pipeline
