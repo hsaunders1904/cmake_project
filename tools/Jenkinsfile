@@ -4,27 +4,24 @@ pipeline {
   agent any
 
   triggers {
-      withCredentials([string(credentialsId: 'cmake_project_Trigger_Token',
-          variable: 'trigger_token')]) {
-        GenericTrigger(
-          genericVariables: [
-          [key: 'ref', value: '$.ref']
-          ],
+    GenericTrigger(
+      genericVariables: [
+      [key: 'ref', value: '$.ref']
+      ],
 
-          causeString: 'Triggered on $ref',
+      causeString: 'Triggered on $ref',
 
-          token: '${trigger_token}',
+      token: 'cmake_project_Trigger_Token',
 
-          printContributedVariables: true,
-          printPostContent: true,
+      printContributedVariables: true,
+      printPostContent: true,
 
-          silentResponse: false,
+      silentResponse: false,
 
-          regexpFilterText: '$ref',
-          regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
-        )
-      }
-    }
+      regexpFilterText: '$ref',
+      regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
+    )
+  }
 
   stages {
 
