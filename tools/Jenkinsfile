@@ -1,74 +1,60 @@
 #!groovy
 
 pipeline {
-
   agent any
 
   stages {
 
+    triggers {
+      GenericTrigger(
+        genericVariables: [
+        [key: 'ref', value: '$.ref']
+        ],
+
+        causeString: 'Triggered on $ref',
+
+        token: 'abc123',
+
+        printContributedVariables: true,
+        printPostContent: true,
+
+        silentResponse: false,
+
+        regexpFilterText: '$ref',
+        regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
+      )
+    }
+
+    stage('Checkout') {
+      checkout([
+        $class: 'GitSCM',
+        branches: [[name: '*/jenkins']],
+        doGenerateSubmoduleConfigurations: false,
+        extensions: [],
+        submoduleCfg: [],
+        userRemoteConfigs: [
+          [url: 'https://github.com/hsaunders1904/cmake_project.git']]
+      ])
+    }
+
     stage('Build') {
       steps {
-        script {
-          if(isUnix()) {
-            sh './tools/build.sh'
-          }
-        }
+        sh '''
+          cd build/
+          cmake .. -G "Unix Makefiles"
+          cmake --build .
+        '''
       }
-   }
+    }
 
     stage('Test') {
       steps {
-        sh './tools/test.sh'
-
-        // archive CTest results file
-        archiveArtifacts(
-          artifacts: 'build/Testing/**/*.xml',
-          fingerprint: true
-        )
-
-        // tell xUnit plugin to process the test results
-        xunit (
-          testTimeMargin: '3000',
-          thresholdMode: 1,
-          thresholds: [
-            skipped(failureThreshold: '0'),
-            failed(failureThreshold: '0')
-          ],
-          tools: [
-            CTest(
-              pattern: 'build/Testing/**/*.xml',
-              deleteOutputFiles: true,
-              failIfNotNew: false,
-              skipNoTestFiles: true,
-              stopProcessingIfError: true
-            )
-          ]
-        )
+        sh '''
+          cd build/
+          ctest
+        '''
       }
     }
 
-    stage('Package') {
-      steps {
-        sh './tools/package.sh'
-        archiveArtifacts(
-          artifacts: 'build/*.tar.gz',
-          fingerprint: true
-        )
-      }
-    }
-
-  }  // stages
-
-  post {
-    always {
-      deleteDir()
-    }
-    // success {
-
-    // }
-    // failure {
-
-    // }
-  }  // post
-
-}  // pipeline
+  }
+}
