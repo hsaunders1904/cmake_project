@@ -3,9 +3,7 @@
 pipeline {
   agent any
 
-  stages {
-
-    triggers {
+  triggers {
       withCredentials([string(credentialsId: 'cmake_project_Trigger_Token',
           variable: 'trigger_token')]) {
         GenericTrigger(
@@ -27,6 +25,8 @@ pipeline {
         )
       }
     }
+
+  stages {
 
     stage('Checkout') {
       steps {
