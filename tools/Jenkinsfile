@@ -3,26 +3,6 @@
 pipeline {
   agent any
 
-  triggers {
-    GenericTrigger(
-      genericVariables: [
-      [key: 'ref', value: '$.ref']
-      ],
-
-      causeString: 'Triggered on $ref',
-
-      token: 'cmake_project_Trigger_Token',
-
-      printContributedVariables: true,
-      printPostContent: true,
-
-      silentResponse: false,
-
-      regexpFilterText: '$ref',
-      regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
-    )
-  }
-
   stages {
 
     stage('Checkout') {
@@ -49,6 +29,5 @@ pipeline {
         '''
       }
     }
-
   }
 }
