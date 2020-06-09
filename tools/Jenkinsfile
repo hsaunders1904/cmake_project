@@ -1,5 +1,30 @@
 #!groovy
 
+node {
+  withCredentials([string(credentialsId: 'cmake_project_Trigger_Token',
+                   variable: 'trigger_token')]) {
+    properties([
+      pipelineTriggers([[
+        $class: 'GenericTrigger',
+        genericVariables: [
+          [key: 'COMMIT_SHA', value: '\$.pull_request.head.sha'],
+          [key: 'ACTION', value: '\$.action'],
+          [key: 'PR_NUMBER', value: '\$.pull_request.number', defaultValue: ''],
+          [key: 'BASE_BRANCH_SHA', value: '\$.pull_request.base.sha'],
+          [key: 'PR_URL', value: '\$.pull_request.html_url', defaultValue: '']
+        ],
+        token: trigger_token,
+        causeString: 'Triggered PR-$PR_NUMBER $PR_URL',
+        printContributedVariables: false,
+        printPostContent: false,
+        silentResponse: false,
+        regexpFilterText: '$ACTION',
+        regexpFilterExpression: '(opened|synchronize)'
+      ]])
+    ])
+  }
+}
+
 pipeline {
   agent any
 
@@ -7,13 +32,26 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        checkout scm
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: '${BASE_BRANCH_SHA}']],
+          doGenerateSubmoduleConfigurations: false,
+          extensions: [[
+            $class: 'PreBuildMerge',
+            options: [
+              mergeRemote: 'origin',
+              mergeTarget: '${COMMIT_SHA}']]],
+          submoduleCfg: [],
+          userRemoteConfigs: [
+            [url: 'https://github.com/hsaunders1904/cmake_project.git']]
+        ])
       }
     }
 
     stage('Build') {
       steps {
         sh '''
+          echo "Commit sha: ${COMMIT_SHA}"
           cd build/
           cmake .. -G "Unix Makefiles"
           cmake --build .
