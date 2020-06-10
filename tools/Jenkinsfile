@@ -11,7 +11,8 @@ node {
           [key: 'BASE_COMMIT_REF', value: '\$.pull_request.base.ref'],
           [key: 'COMMIT_SHA', value: '\$.pull_request.head.sha'],
           [key: 'PR_NUMBER', value: '\$.pull_request.number', defaultValue: ''],
-          [key: 'PR_URL', value: '\$.pull_request.html_url', defaultValue: '']
+          [key: 'PR_URL', value: '\$.pull_request.html_url', defaultValue: ''],
+          [key: 'CLONE_URL', value: '\$.repository.clone_url']
         ],
         token: trigger_token,
         causeString: 'Triggered PR-$PR_NUMBER $PR_URL',
@@ -66,7 +67,7 @@ pipeline {
           submoduleCfg: [],
           userRemoteConfigs: [[
             name: 'origin',
-            url: 'https://github.com/hsaunders1904/cmake_project.git'
+            url: '${CLONE_URL}'
           ]]
         ])
       }
@@ -75,8 +76,6 @@ pipeline {
     stage('Build') {
       steps {
         sh '''
-          echo "Commit sha: ${COMMIT_SHA}"
-          echo "Commit sha: ${BASE_COMMIT_SHA}"
           cd build/
           cmake .. -G "Unix Makefiles"
           cmake --build .
