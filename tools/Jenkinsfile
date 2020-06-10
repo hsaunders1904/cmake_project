@@ -8,7 +8,7 @@ node {
         $class: 'GenericTrigger',
         genericVariables: [
           [key: 'ACTION', value: '\$.action'],
-          [key: 'BASE_COMMIT_SHA', value: '\$.base.sha'],
+          [key: 'BASE_COMMIT_SHA', value: '\$.pull_request.base.sha'],
           [key: 'COMMIT_SHA', value: '\$.pull_request.head.sha'],
           [key: 'PR_NUMBER', value: '\$.pull_request.number', defaultValue: ''],
           [key: 'PR_URL', value: '\$.pull_request.url', defaultValue: '']
