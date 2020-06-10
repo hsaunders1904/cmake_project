@@ -35,13 +35,13 @@ pipeline {
       steps {
         checkout([
           $class: 'GitSCM',
-          branches: [[name: '${BASE_COMMIT_REF}']],
+          branches: [[name: '${COMMIT_SHA}']],
           doGenerateSubmoduleConfigurations: false,
           extensions: [[
             $class: 'PreBuildMerge',
             options: [
               mergeRemote: 'origin',
-              mergeTarget: '${COMMIT_SHA}']]],
+              mergeTarget: '${BASE_COMMIT_SHA}']]],
           submoduleCfg: [],
           userRemoteConfigs: [[
             name: 'origin',
