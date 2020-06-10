@@ -7,15 +7,15 @@ node {
       pipelineTriggers([[
         $class: 'GenericTrigger',
         genericVariables: [
-          [key: 'COMMIT_SHA', value: '\$.pull_request.head.sha'],
           [key: 'ACTION', value: '\$.action'],
+          [key: 'BASE_COMMIT_SHA', value: '\$.base.sha'],
+          [key: 'COMMIT_SHA', value: '\$.pull_request.head.sha'],
           [key: 'PR_NUMBER', value: '\$.pull_request.number', defaultValue: ''],
-          [key: 'BASE_BRANCH_SHA', value: '\$.pull_request.base.sha'],
-          [key: 'PR_URL', value: '\$.pull_request.html_url', defaultValue: '']
+          [key: 'PR_URL', value: '\$.pull_request.url', defaultValue: '']
         ],
         token: trigger_token,
         causeString: 'Triggered PR-$PR_NUMBER $PR_URL',
-        printContributedVariables: false,
+        printContributedVariables: true,
         printPostContent: false,
         silentResponse: false,
         regexpFilterText: '$ACTION',
@@ -34,7 +34,7 @@ pipeline {
       steps {
         checkout([
           $class: 'GitSCM',
-          branches: [[name: '${BASE_BRANCH_SHA}']],
+          branches: [[name: '${BASE_COMMIT_SHA}']],
           doGenerateSubmoduleConfigurations: false,
           extensions: [[
             $class: 'PreBuildMerge',
@@ -42,8 +42,10 @@ pipeline {
               mergeRemote: 'origin',
               mergeTarget: '${COMMIT_SHA}']]],
           submoduleCfg: [],
-          userRemoteConfigs: [
-            [url: 'https://github.com/hsaunders1904/cmake_project.git']]
+          userRemoteConfigs: [[
+            name: 'origin',
+            url: 'https://github.com/hsaunders1904/cmake_project.git'
+          ]]
         ])
       }
     }
@@ -52,6 +54,7 @@ pipeline {
       steps {
         sh '''
           echo "Commit sha: ${COMMIT_SHA}"
+          echo "Commit sha: ${BASE_COMMIT_SHA}"
           cd build/
           cmake .. -G "Unix Makefiles"
           cmake --build .
@@ -63,8 +66,25 @@ pipeline {
       steps {
         sh '''
           cd build/
-          ctest
+          ctest --output-on-failure -T test --no-compress-output || /usr/bin/true
         '''
+        xunit (
+          testTimeMargin: '3000',
+          thresholdMode: 1,
+          thresholds: [
+            skipped(failureThreshold: '0'),
+            failed(failureThreshold: '0')
+          ],
+          tools: [
+            CTest(
+              pattern: 'build/Testing/**/*.xml',
+              deleteOutputFiles: true,
+              failIfNotNew: true,
+              skipNoTestFiles: false,
+              stopProcessingIfError: true
+            )
+          ]
+        )
       }
     }
   }
