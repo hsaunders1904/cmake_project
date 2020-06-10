@@ -8,7 +8,6 @@ node {
         $class: 'GenericTrigger',
         genericVariables: [
           [key: 'ACTION', value: '\$.action'],
-          [key: 'BASE_COMMIT_SHA', value: '\$.pull_request.base.sha'],
           [key: 'BASE_COMMIT_REF', value: '\$.pull_request.base.ref'],
           [key: 'COMMIT_SHA', value: '\$.pull_request.head.sha'],
           [key: 'PR_NUMBER', value: '\$.pull_request.number', defaultValue: ''],
@@ -16,7 +15,7 @@ node {
         ],
         token: trigger_token,
         causeString: 'Triggered PR-$PR_NUMBER $PR_URL',
-        printContributedVariables: true,
+        printContributedVariables: false,
         printPostContent: false,
         silentResponse: false,
         regexpFilterText: '$ACTION',
