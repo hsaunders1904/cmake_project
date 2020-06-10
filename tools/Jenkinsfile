@@ -41,7 +41,7 @@ pipeline {
             $class: 'PreBuildMerge',
             options: [
               mergeRemote: 'origin',
-              mergeTarget: '${BASE_COMMIT_SHA}']]],
+              mergeTarget: '${BASE_COMMIT_REF}']]],
           submoduleCfg: [],
           userRemoteConfigs: [[
             name: 'origin',
