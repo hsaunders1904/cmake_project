@@ -9,9 +9,10 @@ node {
         genericVariables: [
           [key: 'ACTION', value: '\$.action'],
           [key: 'BASE_COMMIT_SHA', value: '\$.pull_request.base.sha'],
+          [key: 'BASE_COMMIT_REF', value: '\$.pull_request.base.ref'],
           [key: 'COMMIT_SHA', value: '\$.pull_request.head.sha'],
           [key: 'PR_NUMBER', value: '\$.pull_request.number', defaultValue: ''],
-          [key: 'PR_URL', value: '\$.pull_request.url', defaultValue: '']
+          [key: 'PR_URL', value: '\$.pull_request.html_url', defaultValue: '']
         ],
         token: trigger_token,
         causeString: 'Triggered PR-$PR_NUMBER $PR_URL',
@@ -34,7 +35,7 @@ pipeline {
       steps {
         checkout([
           $class: 'GitSCM',
-          branches: [[name: '${BASE_COMMIT_SHA}']],
+          branches: [[name: '${BASE_COMMIT_REF}']],
           doGenerateSubmoduleConfigurations: false,
           extensions: [[
             $class: 'PreBuildMerge',
@@ -86,6 +87,12 @@ pipeline {
           ]
         )
       }
+    }
+  }
+
+  post {
+    cleanup {
+      deleteDir()
     }
   }
 }
