@@ -41,7 +41,7 @@ pipeline {
           ],
           contextSource: [
             $class: 'ManuallyEnteredCommitContextSource',
-            context: 'PR-Ubuntu-20'
+            context: '${JOB_BASE_NAME}'
           ],
           statusResultSource: [
             $class: 'ConditionalStatusResultSource',
@@ -79,9 +79,7 @@ pipeline {
     stage('Build') {
       steps {
         sh '''
-          cd build/
-          cmake .. -G "Unix Makefiles"
-          cmake --build .
+          ./tools/build.sh
         '''
       }
     }
@@ -89,8 +87,7 @@ pipeline {
     stage('Test') {
       steps {
         sh '''
-          cd build/
-          ctest --output-on-failure -T test --no-compress-output || /usr/bin/true
+          ./tools/test.sh
         '''
         xunit (
           testTimeMargin: '3000',
@@ -124,7 +121,7 @@ pipeline {
         ],
         contextSource: [
           $class: 'ManuallyEnteredCommitContextSource',
-          context: 'PR-Ubuntu-20'
+          context: '${JOB_BASE_NAME}'
         ],
         statusResultSource: [
           $class: 'ConditionalStatusResultSource',
@@ -146,7 +143,7 @@ pipeline {
         ],
         contextSource: [
           $class: 'ManuallyEnteredCommitContextSource',
-          context: 'PR-Ubuntu-20'
+          context: '${JOB_BASE_NAME}'
         ],
         statusResultSource: [
           $class: 'ConditionalStatusResultSource',

@@ -48,5 +48,8 @@ endif()
 #######################################################################
 add_subdirectory(src)
 
+#######################################################################
+# Install commands
+#######################################################################
 install(DIRECTORY "${CMAKE_BINARY_DIR}/bin/" DESTINATION "." USE_SOURCE_PERMISSIONS)
 install(FILES "LICENSE" "README.md" DESTINATION ".")
