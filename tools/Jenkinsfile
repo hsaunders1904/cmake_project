@@ -32,25 +32,27 @@ pipeline {
   stages {
 
     stage('Notify') {
-      step([
-        $class: 'GitHubCommitStatusSetter',
-        commitShaSource: [
-          $class: 'ManuallyEnteredShaSource',
-          sha: '${COMMIT_SHA}'
-        ],
-        contextSource: [
-          $class: 'ManuallyEnteredCommitContextSource',
-          context: 'PR-Ubuntu-20'
-        ],
-        statusResultSource: [
-          $class: 'ConditionalStatusResultSource',
-          results: [[
-            $class: 'AnyBuildResult',
-            message: 'The build is running',
-            state: 'PENDING'
-          ]]
-        ]
-      ])
+      steps {
+        step([
+          $class: 'GitHubCommitStatusSetter',
+          commitShaSource: [
+            $class: 'ManuallyEnteredShaSource',
+            sha: '${COMMIT_SHA}'
+          ],
+          contextSource: [
+            $class: 'ManuallyEnteredCommitContextSource',
+            context: 'PR-Ubuntu-20'
+          ],
+          statusResultSource: [
+            $class: 'ConditionalStatusResultSource',
+            results: [[
+              $class: 'AnyBuildResult',
+              message: 'The build is running',
+              state: 'PENDING'
+            ]]
+          ]
+        ])
+      }
     }
 
     stage('Checkout') {
