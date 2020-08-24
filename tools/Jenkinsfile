@@ -68,6 +68,7 @@ pipeline {
               mergeTarget: '${BASE_COMMIT_REF}']]],
           submoduleCfg: [],
           userRemoteConfigs: [[
+            credentialsId: 'hsaun_GitHub_userpass',
             name: 'origin',
             url: '${CLONE_URL}'
           ]]
