@@ -132,6 +132,11 @@ pipeline {
           ]]
         ]
       ])
+
+      archiveArtifacts(
+          artifacts: 'build/bin/cmake_project',
+          fingerprint: true
+      )
     }
 
     unsuccessful {
